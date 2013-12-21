@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
-    public TextView userLabel;
+    public TextView emailLabel;
     public TextView passwordLabel;
     public Button button;
     public EditText emailField;
@@ -35,33 +35,46 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setupLoginForm(LinearLayout main) {
-        LinearLayout userSection = new LinearLayout(this);
-        userSection.setOrientation(LinearLayout.HORIZONTAL);
-
-
-        userLabel = new TextView(this);
-        userLabel.setText("Email:");
-        emailField = new EditText(this);
-        emailField.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-
-        userSection.addView(userLabel);
-        userSection.addView(emailField);
-
+        LinearLayout emailSection = new LinearLayout(this);
+        emailSection.setOrientation(LinearLayout.HORIZONTAL);
+        setupEmailSection(emailSection);
         LinearLayout passwordSection = new LinearLayout(this);
-        userSection.setOrientation(LinearLayout.HORIZONTAL);
+        setupPasswordSection(passwordSection);
+        setupLoginButton();
+        addChildViews(main, emailSection, passwordSection);
+    }
+
+    private void addChildViews(LinearLayout main, LinearLayout emailSection, LinearLayout passwordSection) {
+        main.addView(emailSection);
+        main.addView(passwordSection);
+        main.addView(button);
+    }
+
+    private void setupLoginButton() {
+        button = new Button(this);
+        button.setText("Login");
+        button.setOnClickListener(makeClick());
+    }
+
+    private void setupPasswordSection(LinearLayout passwordSection) {
+        passwordSection.setOrientation(LinearLayout.HORIZONTAL);
         passwordLabel = new TextView(this);
         passwordLabel.setText("Password:");
         passwordField = new EditText(this);
         passwordField.setTransformationMethod(PasswordTransformationMethod.getInstance());
         passwordSection.addView(passwordLabel);
         passwordSection.addView(passwordField);
+    }
 
-        button = new Button(this);
-        button.setText("Login");
-        button.setOnClickListener(makeClick());
-        main.addView(userSection);
-        main.addView(passwordSection);
-        main.addView(button);
+    private void setupEmailSection(LinearLayout userSection) {
+        emailLabel = new TextView(this);
+        emailLabel.setText("Email:");
+        emailField = new EditText(this);
+        emailField.setWidth(30);
+        emailField.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+        userSection.addView(emailLabel);
+        userSection.addView(emailField);
     }
 
     protected View.OnClickListener makeClick() {
