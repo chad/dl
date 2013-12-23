@@ -35,6 +35,7 @@ public class LoginService implements ILoginService {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("email", email));
         params.add(new BasicNameValuePair("password", password));
+        params.add(new BasicNameValuePair("client_id", "802ddb140a9ee060de8c")); // DL
         HttpPost httpPost = new HttpPost("http://a.wunderlist.com/api/v1/user/authenticate");
 
         httpPost.setEntity(new UrlEncodedFormEntity(params));
