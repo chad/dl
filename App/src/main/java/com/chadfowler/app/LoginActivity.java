@@ -75,7 +75,6 @@ public class LoginActivity extends Activity {
         emailLabel = new TextView(this);
         emailLabel.setText("Email:");
         emailField = new EditText(this);
-        emailField.setWidth(30);
         emailField.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
         userSection.addView(emailLabel);
