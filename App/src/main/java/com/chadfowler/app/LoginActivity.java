@@ -2,6 +2,7 @@ package com.chadfowler.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
@@ -11,6 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.chadfowler.api.LoginService;
+import com.chadfowler.data.User;
 
 /**
  * Created by chad on 22/12/13.
@@ -82,12 +86,30 @@ public class LoginActivity extends Activity {
         return new View.OnClickListener() {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                try {
+                    User u = new LoginService().login(emailField.getText().toString(), passwordField.getText().toString());
+                    saveToken(u.accessToken);
+                    builder.setMessage("email: " + emailField.getText() + ", password: " + passwordField.getText())
+                            .setTitle("a dialog");
+                    finish();
+                } catch (User.UserConstructionException e) {
+                    builder.setMessage(e.getMessage())
+                            .setTitle("a dialog");
 
-                builder.setMessage("email: " + emailField.getText() + ", password: " + passwordField.getText())
-                        .setTitle("a dialog");
+                }
+
+
                 builder.show();
+
             }
         };
 
+    }
+
+    private void saveToken(String accessToken) {
+        SharedPreferences settings = getSharedPreferences("dl", MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("oauthToken", accessToken);
+        editor.commit();
     }
 }

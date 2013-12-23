@@ -6,8 +6,8 @@ import org.json.JSONObject;
 
 public class User {
 
-    private final String email;
-    private final String accessToken;
+    public final String email;
+    public final String accessToken;
 
     public User(String email, String accessToken) {
         this.email = email;

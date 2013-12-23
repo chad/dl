@@ -32,35 +32,40 @@ public class LoginService implements ILoginService {
 
 
     private String makeHttpRequest(String email, String password) throws IOException {
-        DefaultHttpClient httpClient = new DefaultHttpClient();
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("email", email));
         params.add(new BasicNameValuePair("password", password));
-        HttpPost httpPost = new HttpPost("http://a.wunderlist.com/api/v1/user/");
+        HttpPost httpPost = new HttpPost("http://a.wunderlist.com/api/v1/user/authenticate");
+
         httpPost.setEntity(new UrlEncodedFormEntity(params));
 
+        DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpPost);
+
+        return processHttpResponse(httpResponse);
+    }
+
+    private String processHttpResponse(HttpResponse httpResponse) throws IOException {
         HttpEntity httpEntity = httpResponse.getEntity();
-        InputStream is = null;
+        InputStream is = httpEntity.getContent();
+
         try {
-            is = httpEntity.getContent();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
                     is, "iso-8859-1"), 8);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        StringBuilder sb = new StringBuilder();
+
+            StringBuilder sb = new StringBuilder();
         String line = null;
         while ((line = reader.readLine()) != null) {
             sb.append(line + "n");
         }
         is.close();
         return sb.toString();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return "";
+        }
+
     }
 
 
