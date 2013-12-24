@@ -4,5 +4,5 @@ import com.chadfowler.data.User;
 
 
 public interface ILoginService {
-    public User login(String email, String password) throws User.UserConstructionException;
+    public void login(String email, String password) throws User.UserConstructionException;
 }
