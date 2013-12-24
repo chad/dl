@@ -13,6 +13,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="Genau"
         android:theme="@style/AppTheme" >
+        <uses-permission android:name="android.permission.INTERNET" />
+
         <activity
             android:name="com.chadfowler.app.MainActivity"
             android:label="@string/app_name" >
