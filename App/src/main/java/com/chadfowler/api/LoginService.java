@@ -31,7 +31,7 @@ public class LoginService implements ILoginService {
     }
 
     public void login(String email, String password) {
-        new LoginTask(caller).execute();
+        new LoginTask(caller).execute(email, password);
     }
 
 
