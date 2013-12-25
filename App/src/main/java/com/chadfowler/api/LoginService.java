@@ -1,6 +1,7 @@
 package com.chadfowler.api;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -29,12 +30,12 @@ public class LoginService implements ILoginService {
         this.caller = caller;
     }
 
-    public void login(String email, String password) throws User.UserConstructionException {
+    public void login(String email, String password) {
         new LoginTask(caller).execute();
     }
 
 
-    private class LoginTask extends AsyncTask<String, Integer, Integer> {
+    private class LoginTask extends AsyncTask<String, User, User> {
         private final Activity caller;
         String json = null;
 
@@ -43,28 +44,36 @@ public class LoginService implements ILoginService {
         }
 
         @Override
-        protected Integer doInBackground(String... params) {
+        protected User doInBackground(String... params) {
             String email = params[0];
             String password = params[1];
             try {
                 json = makeHttpRequest(email, password);
+                User u = User.fromJSON(json);
+                return u;
 
-
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace(); //FIXME
-
             }
-            return 1; //FIXME
+            return null; //FIXME
         }
 
         @Override
-        public void onProgressUpdate(Integer... i) {
-            Log.d("genau", "Progress: " + i);
+        public void onProgressUpdate(User... u) {
+            Log.d("genau", "Progress: " + u);
         }
 
         @Override
-        protected void onPostExecute(Integer i) {
+        protected void onPostExecute(User u) {
+            saveToken(u.accessToken);
             caller.finish();
+        }
+
+        private void saveToken(String accessToken) {
+            SharedPreferences settings = caller.getSharedPreferences("dl", caller.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("oauthToken", accessToken);
+            editor.commit();
         }
 
         private String processHttpResponse(HttpResponse httpResponse) throws IOException {
