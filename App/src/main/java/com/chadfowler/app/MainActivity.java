@@ -1,5 +1,6 @@
 package com.chadfowler.app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -54,9 +55,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private View.OnClickListener makeClick() {
+        final Activity caller = this;
+
         return new View.OnClickListener() {
             public void onClick(View v) {
-                new TaskService().addWithReminder(taskField.getText().toString(), new Date());
+                new TaskService(caller).addWithReminder(taskField.getText().toString(), new Date());
             }
         };
     }
