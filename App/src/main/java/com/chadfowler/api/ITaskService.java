@@ -4,5 +4,5 @@ import java.util.Date;
 
 
 public interface ITaskService {
-    public boolean addWithReminder(String title, Date reminder);
+    public void addWithReminder(String title, Date reminder);
 }
