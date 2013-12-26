@@ -8,6 +8,7 @@ import com.chadfowler.data.DatabaseOpener;
 import com.chadfowler.data.Task;
 
 import java.util.Date;
+import java.util.List;
 
 public class TaskService implements ITaskService {
     private final Activity caller;
@@ -31,6 +32,7 @@ public class TaskService implements ITaskService {
         @Override
         protected Task doInBackground(Task... tasks) {
             saveLocally(tasks[0]);
+            postInBackground();
             return tasks[0];
         }
 
@@ -40,10 +42,32 @@ public class TaskService implements ITaskService {
 
         private boolean postInBackground() {
             Log.d("genau", "posting in background");
-            // However it works on Android, start a background worker that posts any
-            // tasks which have not yet been posted and then set them to posted.
+            DatabaseOpener opener = new DatabaseOpener(caller.getApplicationContext());
+            List<Task> tasks = opener.getAllThatNeedToBePosted();
+            for (int i = 0; i < tasks.size(); i++) {
+                Task t = tasks.get(i);
+                post(t);
+                opener.setPosted(t);
+            }
+
             return false;
         }
+
+        private void post(Task t) {
+            postTask(t);
+            postReminder(t);
+        }
+
+        private void postReminder(Task t) {
+            //FIXME
+
+        }
+
+        private void postTask(Task t) {
+            //FIXME
+
+        }
+
 
         private boolean saveLocally(Task t) {
             Log.d("genau", "saving locally");
