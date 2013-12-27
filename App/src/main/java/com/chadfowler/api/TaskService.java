@@ -7,6 +7,10 @@ import android.util.Log;
 import com.chadfowler.data.DatabaseOpener;
 import com.chadfowler.data.Task;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -54,18 +58,29 @@ public class TaskService implements ITaskService {
         }
 
         private void post(Task t) {
-            postTask(t);
-            postReminder(t);
+            try {
+                postTask(t);
+                postReminder(t);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
-        private void postReminder(Task t) {
-            //FIXME
-
+        private void postReminder(Task t) throws IOException {
+            Posticle posticle = new Posticle("/reminders");
+            posticle.addParam("date", new Date().toString()); // Date format
+            posticle.addParam("task_id", t.id);
+            String json = posticle.makeHttpRequest();
         }
 
-        private void postTask(Task t) {
-            //FIXME
-
+        private String postTask(Task t) throws IOException, JSONException {
+            Posticle posticle = new Posticle("/tasks");
+            posticle.addParam("title", t.title); // Date format
+            String json = posticle.makeHttpRequest();
+            JSONObject taskData = new JSONObject(json);
+            return taskData.getString("id");
         }
 
 
