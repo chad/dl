@@ -6,10 +6,12 @@ import org.json.JSONObject;
 
 public class User {
 
+    public final int id;
     public final String email;
     public final String accessToken;
 
-    public User(String email, String accessToken) {
+    public User(Integer id, String email, String accessToken) {
+        this.id = id;
         this.email = email;
         this.accessToken = accessToken;
     }
@@ -20,7 +22,8 @@ public class User {
             JSONObject userData = parseJSON(json);
             String email = userData.getString("email");
             String accessToken = userData.getString("access_token");
-            return new User(email, accessToken);
+            Integer id = userData.getInt("id");
+            return new User(id, email, accessToken);
         } catch (JSONException e) {
             throw new UserConstructionException(e.getMessage());
         }

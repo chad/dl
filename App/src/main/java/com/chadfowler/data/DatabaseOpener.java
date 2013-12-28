@@ -24,7 +24,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS reminders (id  INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, remindAt DATETIME, postedAt DATETIME");
+        db.execSQL("CREATE TABLE IF NOT EXISTS reminders (id  INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, remindAt DATETIME, listId, INTEGER, postedAt DATETIME)");
     }
 
     @Override
@@ -36,6 +36,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("title", t.title);
         values.put("remindAt", dateAsString(t.remindAt));
+        values.put("listId", t.listId);
         SQLiteDatabase db = getWritableDatabase();
         db.insert("reminders", null, values);
         return true;
@@ -45,7 +46,8 @@ public class DatabaseOpener extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("postedAt", dateAsString(new Date()));
-        db.update("reminders", values, "title = '?'", new String[]{t.title});
+        db.update("reminders", values, "title = '" + t.title + "'", null);
+//        db.update("reminders", values, "title = '?'", new String[]{t.title}); //FIXME why didn't this work?
     }
 
     private String dateAsString(java.util.Date d) {

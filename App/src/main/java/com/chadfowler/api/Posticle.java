@@ -22,15 +22,24 @@ import java.util.List;
 public class Posticle {
     HttpPost httpPost;
     List<NameValuePair> params;
+    String oauthToken;
 
     public Posticle(String uri) {
         httpPost = new HttpPost("http://a.wunderlist.com/api/v1" + uri);
     }
 
+    public Posticle(String uri, String oauthToken) {
+        this(uri);
+        this.oauthToken = oauthToken;
+    }
+
     public void addParam(String key, String value) {
         if (params == null) {
             params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("client_id", "802ddb140a9ee060de8c")); // DL
+            String boring = "f42a83cb136750a7d8b8";
+            params.add(new BasicNameValuePair("client_id", boring)); // DL
+
+//            params.add(new BasicNameValuePair("client_id", "802ddb140a9ee060de8c")); // DL
         }
         params.add(new BasicNameValuePair(key, value));
     }
@@ -62,6 +71,10 @@ public class Posticle {
     public String makeHttpRequest() throws IOException {
 
         httpPost.setEntity(new UrlEncodedFormEntity(params));
+        httpPost.setHeader("Accept", "application/json");
+        if (oauthToken != null) {
+            httpPost.setHeader("X-Access-Token", oauthToken);
+        }
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpPost);

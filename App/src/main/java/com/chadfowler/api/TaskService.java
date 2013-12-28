@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.chadfowler.app.MainActivity;
 import com.chadfowler.data.DatabaseOpener;
 import com.chadfowler.data.Task;
 
@@ -22,8 +23,9 @@ public class TaskService implements ITaskService {
     }
 
 
-    public void addWithReminder(String title, Date reminder) {
-        new TaskCreationTask(caller).execute(new Task(title, reminder));
+    public void addWithReminder(int userId, String title, Date reminder) {
+        int inboxId = -userId;
+        new TaskCreationTask(caller).execute(new Task(title, reminder, inboxId));
     }
 
     private class TaskCreationTask extends AsyncTask<Task, Task, Task> {
@@ -38,10 +40,6 @@ public class TaskService implements ITaskService {
             saveLocally(tasks[0]);
             postInBackground();
             return tasks[0];
-        }
-
-        public boolean addWithReminder(String title, Date reminder) {
-            return saveLocally(new Task(title, reminder)) && postInBackground();
         }
 
         private boolean postInBackground() {
@@ -69,17 +67,20 @@ public class TaskService implements ITaskService {
         }
 
         private void postReminder(Task t) throws IOException {
-            Posticle posticle = new Posticle("/reminders");
+            Posticle posticle = new Posticle("/reminders", ((MainActivity) caller).oauthToken);
             posticle.addParam("date", new Date().toString()); // Date format
             posticle.addParam("task_id", t.id);
             String json = posticle.makeHttpRequest();
         }
 
         private String postTask(Task t) throws IOException, JSONException {
-            Posticle posticle = new Posticle("/tasks");
+            Posticle posticle = new Posticle("/tasks", ((MainActivity) caller).oauthToken);
             posticle.addParam("title", t.title); // Date format
+            posticle.addParam("list_id", new Integer(t.listId).toString());
+
             String json = posticle.makeHttpRequest();
             JSONObject taskData = new JSONObject(json);
+            Log.d("genau", json);
             return taskData.getString("id");
         }
 

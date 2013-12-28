@@ -52,18 +52,17 @@ public class LoginService implements ILoginService {
 
         @Override
         protected void onPostExecute(User u) {
-            saveToken(u.accessToken);
+            saveIdAndToken(u.id, u.accessToken);
             caller.finish();
         }
 
-        private void saveToken(String accessToken) {
+        private void saveIdAndToken(int id, String accessToken) {
             SharedPreferences settings = caller.getSharedPreferences("dl", caller.MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("oauthToken", accessToken);
+            editor.putInt("userId", id);
             editor.commit();
         }
-
-
 
 
     }

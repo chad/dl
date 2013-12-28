@@ -18,7 +18,7 @@ import java.util.Date;
 
 
 public class MainActivity extends ActionBarActivity {
-    private String oauthToken;
+    public String oauthToken;
     private TextView taskLabel;
     private EditText taskField;
     private Button button;
@@ -59,7 +59,10 @@ public class MainActivity extends ActionBarActivity {
 
         return new View.OnClickListener() {
             public void onClick(View v) {
-                new TaskService(caller).addWithReminder(taskField.getText().toString(), new Date());
+                SharedPreferences settings = getSharedPreferences("dl", MODE_PRIVATE);
+                int userId = settings.getInt("userId", 0);
+                //FIXME userId is required
+                new TaskService(caller).addWithReminder(userId, taskField.getText().toString(), new Date());
             }
         };
     }
