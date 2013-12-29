@@ -23,19 +23,13 @@ public class MainActivity extends ActionBarActivity {
         SharedPreferences settings = getSharedPreferences("dl", MODE_PRIVATE);
         if (settings.contains(("oauthToken"))) {
             oauthToken = settings.getString("oauthToken", "");
-            renderForm();
-
-
         } else {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
-    }
-
-    private void renderForm() {
         setContentView(new ReminderView(this));
+
+
     }
-
-
 
 
 }
