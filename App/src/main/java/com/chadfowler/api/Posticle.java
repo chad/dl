@@ -2,26 +2,24 @@ package com.chadfowler.api;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by chad on 26/12/13.
  */
 public class Posticle {
     HttpPost httpPost;
-    List<NameValuePair> params;
+    JSONObject params;
     String oauthToken;
 
     public Posticle(String uri) {
@@ -35,13 +33,14 @@ public class Posticle {
 
     public void addParam(String key, String value) {
         if (params == null) {
-            params = new ArrayList<NameValuePair>();
-            String boring = "f42a83cb136750a7d8b8";
-            params.add(new BasicNameValuePair("client_id", boring)); // DL
-
-//            params.add(new BasicNameValuePair("client_id", "802ddb140a9ee060de8c")); // DL
+            params = new JSONObject();
         }
-        params.add(new BasicNameValuePair(key, value));
+        try {
+            params.put(key, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private String processHttpResponse(HttpResponse httpResponse) throws IOException {
@@ -70,8 +69,10 @@ public class Posticle {
 
     public String makeHttpRequest() throws IOException {
 
-        httpPost.setEntity(new UrlEncodedFormEntity(params));
+        httpPost.setEntity(new StringEntity(params.toString()));
         httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-type", "application/json");
+        httpPost.setHeader("X-Client-ID", "f42a83cb136750a7d8b8"); //DL
         if (oauthToken != null) {
             httpPost.setHeader("X-Access-Token", oauthToken);
         }

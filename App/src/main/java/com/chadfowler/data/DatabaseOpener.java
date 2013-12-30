@@ -63,7 +63,9 @@ public class DatabaseOpener extends SQLiteOpenHelper {
         if (c.getCount() > 0) {
             c.moveToFirst();
             do {
-                list.add(new Task(c.getString(c.getColumnIndex("title")), stringAsDate(c.getString(c.getColumnIndex("remindAt")))));
+                list.add(new Task(
+                        c.getString(c.getColumnIndex("title")), stringAsDate(c.getString(c.getColumnIndex("remindAt"))), c.getInt(c.getColumnIndex("listId"))
+                ));
             } while (c.moveToNext());
             c.close();
         }
