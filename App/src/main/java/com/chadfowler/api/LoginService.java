@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.chadfowler.data.User;
 
-public class LoginService implements ILoginService {
+public class LoginService {
     private final Activity caller;
 
     public LoginService(Activity caller) {

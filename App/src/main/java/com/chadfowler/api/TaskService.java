@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-public class TaskService implements ITaskService {
+public class TaskService {
     private final Activity caller;
 
     public TaskService(Activity caller) {
