@@ -45,6 +45,7 @@ public class ReminderView extends LinearLayout {
         addView(taskLabel);
         addView(taskField);
         addView(button);
+        reset();
     }
 
     private View.OnClickListener makeClick() {
