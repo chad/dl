@@ -1,6 +1,7 @@
 package com.chadfowler.api;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -36,8 +37,7 @@ public class LoginService {
                 posticle.addParam("email", email);
                 posticle.addParam("password", password);
                 json = posticle.makeHttpRequest();
-                User u = User.fromJSON(json);
-                return u;
+                return User.fromJSON(json);
 
             } catch (Exception e) {
                 e.printStackTrace(); //FIXME
@@ -47,17 +47,20 @@ public class LoginService {
 
         @Override
         public void onProgressUpdate(User... u) {
-            Log.d("genau", "Progress: " + u);
+            Log.d("genau", "Progress: " + u[0].toString());
         }
 
         @Override
         protected void onPostExecute(User u) {
             saveIdAndToken(u.id, u.accessToken);
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("oauthToken", u.accessToken);
+            caller.setResult(Activity.RESULT_OK, resultIntent);
             caller.finish();
         }
 
         private void saveIdAndToken(int id, String accessToken) {
-            SharedPreferences settings = caller.getSharedPreferences("dl", caller.MODE_PRIVATE);
+            SharedPreferences settings = caller.getSharedPreferences("dl", Activity.MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("oauthToken", accessToken);
             editor.putInt("userId", id);

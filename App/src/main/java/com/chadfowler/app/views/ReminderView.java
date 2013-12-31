@@ -1,5 +1,6 @@
 package com.chadfowler.app.views;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,8 +27,14 @@ public class ReminderView extends LinearLayout {
         setupLayout();
     }
 
+    public void reset() {
+        taskField.setText("");
+        taskField.setFocusableInTouchMode(true);
+        taskField.requestFocus();
+    }
+
     private void setupLayout() {
-        setLayoutParams(new android.app.ActionBar.LayoutParams(android.app.ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        setLayoutParams(new android.app.ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         setOrientation(LinearLayout.VERTICAL);
         taskLabel = new TextView(container);
         taskLabel.setText("Remind me about:");
